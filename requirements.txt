@@ -1,0 +1,5 @@
+flask
+numpy
+gunicorn
+flask-cors
+https://github.com/rkjaran/sequitur-g2p/archive/master.zip

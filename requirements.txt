@@ -3,4 +3,5 @@ numpy
 gunicorn
 flask-cors
 flask-apispec
+flask-caching
 https://github.com/rkjaran/sequitur-g2p/archive/master.zip

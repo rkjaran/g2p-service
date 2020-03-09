@@ -5,6 +5,7 @@ from flask import Flask, request, jsonify, Response
 from flask_cors import CORS
 from webargs import fields
 from flask_apispec import use_kwargs, marshal_with, FlaskApiSpec, doc
+from flask_caching import Cache
 from marshmallow import validate, Schema
 from apispec import APISpec, BasePlugin
 from apispec.ext.marshmallow import MarshmallowPlugin
@@ -16,8 +17,11 @@ app = Flask(__name__)
 app.config["JSON_AS_ASCII"] = False
 app.config["APISPEC_SWAGGER_URL"] = "/pron/swagger.json"
 app.config["APISPEC_SWAGGER_UI_URL"] = "/pron/swagger-ui/"
-CORS(app)
+app.config["CACHE_TYPE"] = "simple"
+app.config["CACHE_DEFAULT_TIMEOUT"] = 60*60*24*2
 
+CORS(app)
+cache = Cache(app)
 
 # See https://github.com/jmcarp/flask-apispec/issues/155#issuecomment-562542538
 class DisableOptionsOperationPlugin(BasePlugin):
@@ -179,6 +183,7 @@ def pron_to_tsv(prons):
     ),
 }, locations=["query"])
 @marshal_with(None)
+@cache.memoize()
 def route_pronounce(word, max_variants_number=4,
                     total_variants_mass=0.9, t='json', language_code='is-IS'):
     pron = pronounce(
@@ -224,6 +229,7 @@ docs.register(route_pronounce)
     ),
 })
 @marshal_with(None)
+@cache.memoize()
 def route_pronounce_many(words, max_variants_number=4,
                          total_variants_mass=0.9, t='json', language_code='is-IS'):
     pron = pronounce(

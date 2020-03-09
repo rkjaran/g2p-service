@@ -2,5 +2,5 @@ flask
 numpy
 gunicorn
 flask-cors
-flask-autodoc
+flask-apispec
 https://github.com/rkjaran/sequitur-g2p/archive/master.zip
